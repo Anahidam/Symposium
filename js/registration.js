@@ -11,7 +11,7 @@
    * REPLACE THIS with the URL of your deployed Google Apps Script Web App
    * (see README.md, step "Deploy Apps Script"). It must end in /exec.
    */
-  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
+  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpjiybwSdBpAzDJolF7-8W86KtyRO1CH6Vi6pWpPezyriVUxK2n3dMbG04HAQbsl0THw/exec";
 
   var MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
   var ALLOWED_EXTENSIONS = [".pdf", ".docx"];
