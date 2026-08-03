@@ -1,0 +1,197 @@
+/* ==========================================================================
+   5th Biosciences Symposium — Responsive overrides
+   Breakpoints: tablet <= 1024px, phone <= 640px
+   ========================================================================== */
+
+/* ---- Tablet ---- */
+@media (max-width: 1024px) {
+  .container {
+    padding: 0 24px;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .about-grid,
+  .venue-card,
+  .contact-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .venue-card-map {
+    order: -1;
+  }
+
+  .contact-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hero-artwork {
+    opacity: 0.12;
+    width: 460px;
+  }
+
+  .form-shell {
+    padding: 36px 26px;
+  }
+}
+
+/* ---- Mobile nav ---- */
+@media (max-width: 860px) {
+  .nav-toggle {
+    display: block;
+    z-index: 510;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #fff;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 24px;
+    gap: 8px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+  }
+
+  .nav-links.open {
+    transform: translateX(0);
+  }
+
+  .nav-links a {
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-size: 1.05rem;
+  }
+
+  .nav-cta {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+
+  .nav-toggle.active span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+
+  .nav-toggle.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .nav-toggle.active span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+}
+
+/* ---- Phone ---- */
+@media (max-width: 640px) {
+  .container {
+    padding: 0 18px;
+  }
+
+  .hero {
+    padding: 56px 0 72px;
+    text-align: center;
+  }
+
+  .hero-inner {
+    max-width: 100%;
+  }
+
+  .hero-artwork {
+    display: none;
+  }
+
+  .eyebrow {
+    justify-content: center;
+  }
+
+  .hero-meta {
+    justify-content: center;
+  }
+
+  .hero-actions {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+  }
+
+  .section {
+    padding: 60px 0;
+  }
+
+  .section-header {
+    margin-bottom: 36px;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-figures {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .form-shell {
+    padding: 26px 18px;
+    border-radius: var(--radius-md);
+  }
+
+  .choice-group {
+    flex-direction: column;
+  }
+
+  .choice-option label {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .schedule-item {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .venue-card-info {
+    padding: 30px 22px;
+  }
+
+  .page-header {
+    padding: 48px 0 40px;
+  }
+
+  .brand-text .brand-sub {
+    display: none;
+  }
+}

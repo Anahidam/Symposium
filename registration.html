@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registration — 5th Biosciences Symposium | TU Darmstadt</title>
+<meta name="description" content="Register for the 5th Biosciences Symposium at TU Darmstadt, 20 October 2026. Submit your talk, poster or flash talk contribution.">
+<link rel="icon" type="image/png" href="assets/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/mobile.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="site-header" id="site-header">
+  <div class="navbar">
+    <a href="index.html" class="brand">
+      <img src="assets/images/logo.png" alt="5th Biosciences Symposium logo">
+      <span class="brand-text">
+        <span class="brand-title">Biosciences Symposium</span>
+        <span class="brand-sub">TU Darmstadt · 5th Edition</span>
+      </span>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="registration.html" class="active">Registration</a></li>
+      <li><a href="programme.html">Programme</a></li>
+      <li><a href="venue.html">Venue</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="privacy.html">Privacy</a></li>
+      <li class="nav-cta"><a href="registration.html" class="btn btn-primary">Register Now</a></li>
+    </ul>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="page-header">
+    <div class="container">
+      <div class="breadcrumb">Join us on 20 October 2026</div>
+      <h1>Registration</h1>
+      <p>Register for the 5th Biosciences Symposium at TU Darmstadt. Registration is free — please complete the form below by <strong>29 September 2026</strong>.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+
+      <!-- ============ Registration Form ============ -->
+      <form id="registration-form" class="form-shell" novalidate>
+
+        <!-- Personal Information -->
+        <div class="form-section">
+          <h2 class="form-section-title">Personal Information</h2>
+          <p class="form-section-desc">Please tell us a little about yourself.</p>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name <span class="required">*</span></label>
+              <input type="text" id="firstName" name="firstName" required autocomplete="given-name">
+              <span class="field-error">Please enter your first name.</span>
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name <span class="required">*</span></label>
+              <input type="text" id="lastName" name="lastName" required autocomplete="family-name">
+              <span class="field-error">Please enter your last name.</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email <span class="required">*</span></label>
+              <input type="email" id="email" name="email" required autocomplete="email">
+              <span class="field-error">Please enter a valid email address.</span>
+            </div>
+            <div class="form-group">
+              <label for="institute">Research Group / Institute <span class="required">*</span></label>
+              <input type="text" id="institute" name="institute" required autocomplete="organization">
+              <span class="field-error">Please enter your research group or institute.</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Position <span class="required">*</span></label>
+            <div class="choice-group" id="position-group">
+              <div class="choice-option">
+                <input type="radio" name="position" id="position-postdoc" value="Postdoc" required>
+                <label for="position-postdoc">Postdoc</label>
+              </div>
+              <div class="choice-option">
+                <input type="radio" name="position" id="position-phd" value="PhD Student">
+                <label for="position-phd">PhD Student</label>
+              </div>
+            </div>
+            <span class="field-error" id="position-error">Please select your position.</span>
+          </div>
+        </div>
+
+        <!-- Contribution -->
+        <div class="form-section">
+          <h2 class="form-section-title">Contribution</h2>
+          <p class="form-section-desc">How would you like to contribute to the symposium?</p>
+
+          <div class="form-group">
+            <div class="choice-group" id="contribution-group">
+              <div class="choice-option">
+                <input type="radio" name="contribution" id="contribution-talk" value="Scientific Talk" required>
+                <label for="contribution-talk">Scientific Talk</label>
+              </div>
+              <div class="choice-option">
+                <input type="radio" name="contribution" id="contribution-poster" value="Poster">
+                <label for="contribution-poster">Poster</label>
+              </div>
+            </div>
+            <span class="field-error" id="contribution-error">Please select a contribution type.</span>
+          </div>
+
+          <!-- Flash talk checkbox: only shown when "Poster" is selected -->
+          <div class="conditional-block" id="flashtalk-block">
+            <div class="checkbox-row">
+              <input type="checkbox" id="flashTalk" name="flashTalk">
+              <label for="flashTalk">I would like to be considered for a Flash Talk.</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Presentation -->
+        <div class="form-section">
+          <h2 class="form-section-title">Presentation</h2>
+          <p class="form-section-desc">Details about your talk or poster contribution.</p>
+
+          <div class="form-group">
+            <label for="presentationTitle">Presentation Title <span class="required">*</span></label>
+            <input type="text" id="presentationTitle" name="presentationTitle" required>
+            <span class="field-error">Please enter your presentation title.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="authors">Authors <span class="required">*</span></label>
+            <input type="text" id="authors" name="authors" placeholder="e.g. J. Doe, A. Smith, M. Mueller" required>
+            <span class="field-error">Please list the authors.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="keywords">Keywords</label>
+            <input type="text" id="keywords" name="keywords" placeholder="e.g. genomics, cell signalling, microscopy">
+          </div>
+
+          <div class="form-group">
+            <label for="abstract">Abstract</label>
+            <div class="textarea-wrap">
+              <textarea id="abstract" name="abstract" rows="8" maxlength="3000" placeholder="Enter your abstract (maximum 3000 characters)."></textarea>
+            </div>
+            <div class="char-counter"><span id="abstract-count">0</span> / 3000 characters</div>
+          </div>
+
+          <div class="form-group">
+            <label>Upload TOC <span class="help-text" style="display:inline">(PDF or DOCX, max 10 MB)</span></label>
+            <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload TOC file">
+              <input type="file" id="tocFile" name="tocFile" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+              <div class="dz-icon">📄</div>
+              <div class="dz-title">Drag &amp; drop your file here, or click to browse</div>
+              <div class="dz-hint">Accepted formats: PDF, DOCX — maximum size 10 MB</div>
+            </div>
+            <div class="file-preview" id="file-preview">
+              <span class="file-name" id="file-name"></span>
+              <button type="button" class="file-remove" id="file-remove">Remove</button>
+            </div>
+            <span class="field-error" id="file-error">This file is too large or not a supported format.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="notes">Notes</label>
+            <textarea id="notes" name="notes" rows="4" placeholder="Anything else you'd like the organisers to know? (optional)"></textarea>
+          </div>
+        </div>
+
+        <!-- Consent -->
+        <div class="form-section">
+          <div class="checkbox-row">
+            <input type="checkbox" id="consent" name="consent" required>
+            <label for="consent">I agree that my data may be processed for organizing the symposium. <span class="required">*</span></label>
+          </div>
+          <span class="field-error" id="consent-error">Consent is required to submit your registration.</span>
+        </div>
+
+        <!-- Submit -->
+        <div class="form-submit-row">
+          <button type="submit" class="btn btn-primary btn-large btn-block" id="submit-btn">
+            <span class="spinner" id="submit-spinner"></span>
+            <span id="submit-label">Submit Registration</span>
+          </button>
+          <div class="form-status" id="form-status"></div>
+        </div>
+      </form>
+
+      <!-- ============ Success screen ============ -->
+      <div class="success-screen form-shell" id="success-screen">
+        <div class="success-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0f5a43" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" stroke-opacity="0"/>
+            <path d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+        <h2>Registration received!</h2>
+        <p>Thank you for registering for the 5th Biosciences Symposium.<br>A confirmation email has been sent.</p>
+        <a href="index.html" class="btn btn-outline">Back to homepage</a>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <img src="assets/images/logo.png" alt="">
+          <span>5th Biosciences Symposium</span>
+        </div>
+        <p>An interdisciplinary meeting of biosciences researchers at TU Darmstadt — connecting ideas, inspiring discovery, building collaborations.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="programme.html">Programme</a></li>
+          <li><a href="registration.html">Registration</a></li>
+          <li><a href="venue.html">Venue</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:anahid.amiri@tu-darmstadt.de">anahid.amiri@tu-darmstadt.de</a></li>
+          <li>Department of Biology<br>TU Darmstadt<br>Schnittspahnstraße 3, 64287 Darmstadt</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 5th Biosciences Symposium, TU Darmstadt. All rights reserved.</span>
+      <span><a href="privacy.html">Privacy Policy</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/registration.js"></script>
+</body>
+</html>

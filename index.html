@@ -3,381 +3,248 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Doc–Postdoc Symposium · Availability</title>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-    background: #f2f1ed;
-    min-height: 100vh;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 40px 16px 60px;
-    color: #1a1a1a;
-  }
-
-  .card {
-    background: #fff;
-    border-radius: 12px;
-    width: 100%;
-    max-width: 620px;
-    overflow: hidden;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-  }
-
-  .header {
-    background: #1a1a1a;
-    padding: 28px 32px;
-  }
-  .header-label {
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #888;
-    margin-bottom: 6px;
-  }
-  .header h1 {
-    font-size: 20px;
-    font-weight: 600;
-    color: #fff;
-  }
-
-  .body { padding: 28px 32px; }
-
-  .section-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #888;
-    margin-bottom: 10px;
-  }
-
-  /* Name selector */
-  .name-select {
-    width: 100%;
-    padding: 11px 14px;
-    font-size: 15px;
-    border: 1.5px solid #ddd;
-    border-radius: 8px;
-    background: #fff;
-    color: #1a1a1a;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    cursor: pointer;
-    margin-bottom: 24px;
-  }
-  .name-select:focus { outline: none; border-color: #1a1a1a; }
-
-  /* Week groups */
-  .week-block { margin-bottom: 20px; }
-  .week-title {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #aaa;
-    margin-bottom: 8px;
-  }
-  .date-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-  }
-
-  .date-btn {
-    border: 1.5px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 12px 8px;
-    background: #fff;
-    cursor: pointer;
-    text-align: center;
-    transition: border-color 0.15s, background 0.15s;
-    position: relative;
-  }
-  .date-btn:hover { border-color: #bbb; background: #fafafa; }
-  .date-btn.selected {
-    border-color: #1a1a1a;
-    background: #1a1a1a;
-  }
-  .date-btn .day-name {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: #1a1a1a;
-  }
-  .date-btn.selected .day-name { color: #fff; }
-  .date-btn .time {
-    display: block;
-    font-size: 11px;
-    color: #999;
-    margin-top: 3px;
-  }
-  .date-btn.selected .time { color: #aaa; }
-  .date-btn .check {
-    display: none;
-    position: absolute;
-    top: 6px;
-    right: 8px;
-    font-size: 11px;
-    color: #fff;
-  }
-  .date-btn.selected .check { display: block; }
-
-  /* Counter badge */
-  .counter {
-    display: inline-block;
-    font-size: 12px;
-    background: #f2f1ed;
-    color: #888;
-    border-radius: 20px;
-    padding: 2px 10px;
-    margin-left: 8px;
-    font-weight: 400;
-  }
-
-  /* Submit */
-  .submit-wrap { margin-top: 24px; }
-  .submit-btn {
-    width: 100%;
-    padding: 14px;
-    font-size: 15px;
-    font-weight: 600;
-    border: none;
-    border-radius: 8px;
-    background: #1a1a1a;
-    color: #fff;
-    cursor: pointer;
-    transition: opacity 0.15s;
-  }
-  .submit-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-  .submit-btn:not(:disabled):hover { opacity: 0.85; }
-
-  .hint {
-    font-size: 12px;
-    color: #aaa;
-    margin-top: 10px;
-    text-align: center;
-    line-height: 1.5;
-  }
-
-  /* Success screen */
-  .success {
-    display: none;
-    padding: 48px 32px;
-    text-align: center;
-  }
-  .success-icon { font-size: 48px; margin-bottom: 16px; }
-  .success h2 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
-  .success p { font-size: 14px; color: #666; line-height: 1.6; }
-  .success .chosen-dates {
-    margin-top: 16px;
-    background: #f2f1ed;
-    border-radius: 8px;
-    padding: 14px 16px;
-    font-size: 13px;
-    color: #444;
-    text-align: left;
-    line-height: 1.8;
-  }
-
-  /* Error */
-  .error-msg {
-    display: none;
-    margin-top: 12px;
-    font-size: 13px;
-    color: #c0392b;
-    text-align: center;
-  }
-
-  @media (max-width: 480px) {
-    .body { padding: 20px 18px; }
-    .header { padding: 22px 18px; }
-  }
-</style>
+<title>5th Biosciences Symposium — TU Darmstadt | 20 October 2026</title>
+<meta name="description" content="The 5th Biosciences Symposium at TU Darmstadt brings together researchers for a day of scientific talks, poster sessions, flash talks and awards. Register now.">
+<link rel="icon" type="image/png" href="assets/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/mobile.css">
 </head>
 <body>
+<a href="#main" class="skip-link">Skip to content</a>
 
-<div class="card">
-  <div class="header">
-    <div class="header-label">TU Darmstadt · Biology Department</div>
-    <h1>Doc–Postdoc Symposium — availability</h1>
+<!-- ============ Header / Navigation ============ -->
+<header class="site-header" id="site-header">
+  <div class="navbar">
+    <a href="index.html" class="brand">
+      <img src="assets/images/logo.png" alt="5th Biosciences Symposium logo">
+      <span class="brand-text">
+        <span class="brand-title">Biosciences Symposium</span>
+        <span class="brand-sub">TU Darmstadt · 5th Edition</span>
+      </span>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="registration.html">Registration</a></li>
+      <li><a href="programme.html">Programme</a></li>
+      <li><a href="venue.html">Venue</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="privacy.html">Privacy</a></li>
+      <li class="nav-cta"><a href="registration.html" class="btn btn-primary">Register Now</a></li>
+    </ul>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </div>
+</header>
 
-  <!-- Main form -->
-  <div class="body" id="form-area">
-    <div class="section-label">Your name</div>
-    <select class="name-select" id="name-select" onchange="updateSubmit()">
-      <option value="">— Select your name —</option>
-      <option>Prof. Dr. Nico Blüthgen</option>
-      <option>Prof. Dr. M. Cristina Cardoso</option>
-      <option>Prof. Dr. Marcel Dann</option>
-      <option>Prof. Dr. Ralf Galuske</option>
-      <option>Prof. Dr. Kay Hamacher</option>
-      <option>Apl. Prof. Dr. Michael Heethoff</option>
-      <option>Prof. Dr. Sebastian Hess</option>
-      <option>Prof. Dr. Patrick Heun</option>
-      <option>Prof. Dr. Andreas Jürgens</option>
-      <option>Prof. Dr. Bodo Laube</option>
-      <option>Prof. Dr. Markus Löbrich</option>
-      <option>Prof. Dr. Alexander Loewer</option>
-      <option>Prof. Dr. Fatemeh Mirzapour</option>
-      <option>Prof. Dr. Ulrike A. Nuber</option>
-      <option>Apl. Prof. Dr. Simon Poppinga</option>
-      <option>Prof. Dr. Jörg Simon</option>
-      <option>Prof. Dr. Viktor Stein</option>
-      <option>Prof. Dr. Beatrix Suess</option>
-      <option>Prof. Dr. Torsten Waldminghaus</option>
-      <option>Prof. Dr. Heribert Warzecha</option>
-    </select>
+<main id="main">
 
-    <div class="section-label">
-      Available dates
-      <span class="counter" id="counter">0 selected</span>
-    </div>
+  <!-- ============ Hero ============ -->
+  <section class="hero">
+    <img src="assets/images/dna-tree.svg" alt="" class="hero-artwork">
+    <div class="container">
+      <div class="hero-inner">
+        <span class="eyebrow">Save the date · Autumn 2026</span>
+        <h1><span class="ordinal">5th</span> Biosciences Symposium<br>TU Darmstadt</h1>
+        <p class="hero-tagline">Connecting ideas. Inspiring discovery. Building collaborations. A day dedicated to scientific talks, poster sessions, flash talks and awards for the TU Darmstadt biosciences community.</p>
 
-    <div class="week-block">
-      <div class="week-title">Week 1 · 20–22 October</div>
-      <div class="date-row">
-        <button class="date-btn" onclick="toggle(this, 'Tue 20 Oct')">
-          <span class="check">✓</span>
-          <span class="day-name">Tue 20 Oct</span>
-          <span class="time">12:00–18:00</span>
-        </button>
-        <button class="date-btn" onclick="toggle(this, 'Wed 21 Oct')">
-          <span class="check">✓</span>
-          <span class="day-name">Wed 21 Oct</span>
-          <span class="time">12:00–18:00</span>
-        </button>
-        <button class="date-btn" onclick="toggle(this, 'Thu 22 Oct')">
-          <span class="check">✓</span>
-          <span class="day-name">Thu 22 Oct</span>
-          <span class="time">12:00–18:00</span>
-        </button>
+        <div class="hero-meta">
+          <div class="hero-meta-item">
+            <span class="icon-dot" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+            </span>
+            20 October 2026
+          </div>
+          <div class="hero-meta-item">
+            <span class="icon-dot" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            </span>
+            Biology Building B2|03, Room 109, TU Darmstadt
+          </div>
+        </div>
+
+        <div class="hero-actions">
+          <a href="registration.html" class="btn btn-primary btn-large">Register Now</a>
+          <a href="programme.html" class="btn btn-outline btn-large">View Programme</a>
+        </div>
       </div>
     </div>
+  </section>
 
-    <div class="week-block">
-      <div class="week-title">Week 2 · 27–29 October</div>
-      <div class="date-row">
-        <button class="date-btn" onclick="toggle(this, 'Tue 27 Oct')">
-          <span class="check">✓</span>
-          <span class="day-name">Tue 27 Oct</span>
-          <span class="time">12:00–18:00</span>
-        </button>
-        <button class="date-btn" onclick="toggle(this, 'Wed 28 Oct')">
-          <span class="check">✓</span>
-          <span class="day-name">Wed 28 Oct</span>
-          <span class="time">12:00–18:00</span>
-        </button>
-        <button class="date-btn" onclick="toggle(this, 'Thu 29 Oct')">
-          <span class="check">✓</span>
-          <span class="day-name">Thu 29 Oct</span>
-          <span class="time">12:00–18:00</span>
-        </button>
+  <!-- ============ Feature cards ============ -->
+  <section class="section" id="highlights">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">A day of science &amp; connection</span>
+        <h2>What to expect</h2>
+        <p>One day, four ways to engage — from cutting-edge talks to hands-on poster discussions.</p>
+      </div>
+      <div class="card-grid">
+        <div class="card reveal">
+          <img src="assets/icons/talk.svg" alt="" class="card-icon">
+          <h3>Scientific Talks</h3>
+          <p>Invited and selected speakers present original research across the biosciences.</p>
+        </div>
+        <div class="card reveal">
+          <img src="assets/icons/poster.svg" alt="" class="card-icon">
+          <h3>Poster Session</h3>
+          <p>An interactive session for presenting and discussing work in a relaxed setting.</p>
+        </div>
+        <div class="card reveal">
+          <img src="assets/icons/flash.svg" alt="" class="card-icon">
+          <h3>Flash Talks</h3>
+          <p>Selected poster presenters get a short spotlight slot to pitch their work to the room.</p>
+        </div>
+        <div class="card reveal">
+          <img src="assets/icons/award.svg" alt="" class="card-icon">
+          <h3>Awards</h3>
+          <p>Prizes recognise the best talk and best poster of the symposium.</p>
+        </div>
       </div>
     </div>
+  </section>
 
-    <div class="week-block">
-      <div class="week-title">Week 3 · 3–5 November</div>
-      <div class="date-row">
-        <button class="date-btn" onclick="toggle(this, 'Tue 3 Nov')">
-          <span class="check">✓</span>
-          <span class="day-name">Tue 3 Nov</span>
-          <span class="time">12:00–18:00</span>
-        </button>
-        <button class="date-btn" onclick="toggle(this, 'Wed 4 Nov')">
-          <span class="check">✓</span>
-          <span class="day-name">Wed 4 Nov</span>
-          <span class="time">12:00–18:00</span>
-        </button>
-        <button class="date-btn" onclick="toggle(this, 'Thu 5 Nov')">
-          <span class="check">✓</span>
-          <span class="day-name">Thu 5 Nov</span>
-          <span class="time">12:00–18:00</span>
-        </button>
+  <!-- ============ About ============ -->
+  <section class="section section-alt" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="reveal">
+          <span class="eyebrow">About the symposium</span>
+          <h2>An interdisciplinary meeting for the biosciences community</h2>
+          <p>The Biosciences Symposium is an annual, student-organised event bringing together PhD students, postdocs and principal investigators from across TU Darmstadt's biosciences departments. Now in its fifth edition, the symposium continues to grow as a platform for sharing unpublished research, building new collaborations and celebrating outstanding scientific work.</p>
+          <p>The programme combines invited scientific talks, a lively poster session, short flash-talk pitches and an awards ceremony recognising the best contributions of the day — all within a single, focused day of exchange.</p>
+          <a href="programme.html" class="btn btn-outline">See full programme</a>
+        </div>
+        <div class="about-figures reveal">
+          <div class="figure-card">
+            <span class="figure-number">5th</span>
+            <span class="figure-label">Edition since founding</span>
+          </div>
+          <div class="figure-card">
+            <span class="figure-number">1</span>
+            <span class="figure-label">Full day of science</span>
+          </div>
+          <div class="figure-card">
+            <span class="figure-number">4</span>
+            <span class="figure-label">Ways to contribute</span>
+          </div>
+          <div class="figure-card">
+            <span class="figure-number">2</span>
+            <span class="figure-label">Awards to be won</span>
+          </div>
+        </div>
       </div>
     </div>
+  </section>
 
-    <div class="submit-wrap">
-      <button class="submit-btn" id="submit-btn" disabled onclick="submitForm()">
-        Submit availability
-      </button>
-      <div class="error-msg" id="error-msg">Something went wrong. Please try again or contact the organizer.</div>
-      <p class="hint">Select all dates that work for you, then submit once.<br>Your response goes directly to the organizing team.</p>
+  <!-- ============ Venue teaser ============ -->
+  <section class="section" id="venue">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Where it happens</span>
+        <h2>Venue</h2>
+        <p>Join us in the heart of TU Darmstadt's biology campus.</p>
+      </div>
+      <div class="venue-card reveal">
+        <div class="venue-card-info">
+          <div class="venue-detail-row">
+            <span class="icon-dot" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            </span>
+            <div>
+              <strong>Biology Building B2|03, Room 109</strong><br>
+              Schnittspahnstraße 3, 64287 Darmstadt
+            </div>
+          </div>
+          <div class="venue-detail-row">
+            <span class="icon-dot" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+            </span>
+            <div>
+              <strong>20 October 2026</strong><br>
+              10:00 – 17:00 (detailed programme to follow)
+            </div>
+          </div>
+          <a href="venue.html" class="btn btn-outline">Venue details</a>
+        </div>
+        <div class="venue-card-map">
+          <iframe
+            title="Map showing the Biology Building at TU Darmstadt"
+            src="https://www.google.com/maps?q=Schnittspahnstra%C3%9Fe%203%2C%2064287%20Darmstadt&output=embed"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Contact teaser ============ -->
+  <section class="section section-alt" id="contact">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Questions?</span>
+        <h2>Get in touch</h2>
+        <p>Our organising committee is happy to help with anything regarding the symposium.</p>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-card reveal">
+          <h3>General enquiries</h3>
+          <p>For questions about the programme or registration.</p>
+          <a href="mailto:anahid.amiri@tu-darmstadt.de">anahid.amiri@tu-darmstadt.de</a>
+        </div>
+        <div class="contact-card reveal">
+          <h3>Location</h3>
+          <p>Biology Building B2|03, Room 109<br>Schnittspahnstraße 3, 64287 Darmstadt</p>
+        </div>
+        <div class="contact-card reveal">
+          <h3>Follow up</h3>
+          <p>See the full contact page for organiser details.</p>
+          <a href="contact.html">Contact page →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ Footer ============ -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <img src="assets/images/logo.png" alt="">
+          <span>5th Biosciences Symposium</span>
+        </div>
+        <p>An interdisciplinary meeting of biosciences researchers at TU Darmstadt — connecting ideas, inspiring discovery, building collaborations.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="programme.html">Programme</a></li>
+          <li><a href="registration.html">Registration</a></li>
+          <li><a href="venue.html">Venue</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:anahid.amiri@tu-darmstadt.de">anahid.amiri@tu-darmstadt.de</a></li>
+          <li>Department of Biology<br>TU Darmstadt<br>Schnittspahnstraße 3, 64287 Darmstadt</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 5th Biosciences Symposium, TU Darmstadt. All rights reserved.</span>
+      <span><a href="privacy.html">Privacy Policy</a></span>
     </div>
   </div>
+</footer>
 
-  <!-- Success screen -->
-  <div class="success" id="success-area">
-    <div class="success-icon">✅</div>
-    <h2>Thank you!</h2>
-    <p>Your availability has been recorded.<br>The organizing committee will be in touch soon.</p>
-    <div class="chosen-dates" id="chosen-dates"></div>
-  </div>
-</div>
-
-<script>
-  // ── CONFIGURE THIS ──────────────────────────────────────────────
-  // After deploying your Google Apps Script, paste the URL here:
-  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx9hasJywK1X5FzbDydX-8W94yrplco8GVm0vQg1Oqnh5wmZfsUh3wDssGY4rSD1CBPzg/exec";
-  // ────────────────────────────────────────────────────────────────
-
-  const selected = new Set();
-
-  function toggle(btn, date) {
-    if (selected.has(date)) {
-      selected.delete(date);
-      btn.classList.remove("selected");
-    } else {
-      selected.add(date);
-      btn.classList.add("selected");
-    }
-    document.getElementById("counter").textContent = selected.size + " selected";
-    updateSubmit();
-  }
-
-  function updateSubmit() {
-    const hasName = document.getElementById("name-select").value !== "";
-    const hasDates = selected.size > 0;
-    document.getElementById("submit-btn").disabled = !(hasName && hasDates);
-  }
-
-  function submitForm() {
-    const name = document.getElementById("name-select").value;
-    const dates = Array.from(selected).join(", ");
-    const ts = new Date().toLocaleString("de-DE", { timeZone: "Europe/Berlin" });
-
-    document.getElementById("submit-btn").disabled = true;
-    document.getElementById("submit-btn").textContent = "Submitting…";
-
-    fetch(APPS_SCRIPT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, dates, timestamp: ts })
-    })
-    .then(() => showSuccess(name, dates))
-    .catch(() => {
-      document.getElementById("error-msg").style.display = "block";
-      document.getElementById("submit-btn").disabled = false;
-      document.getElementById("submit-btn").textContent = "Submit availability";
-    });
-  }
-
-  function showSuccess(name, dates) {
-    document.getElementById("form-area").style.display = "none";
-    const s = document.getElementById("success-area");
-    s.style.display = "block";
-    const dateList = dates.split(", ").map(d => "· " + d).join("\n");
-    document.getElementById("chosen-dates").innerHTML =
-      "<strong>" + name + "</strong><br><br>" + dateList.replace(/\n/g, "<br>");
-  }
-</script>
-
+<script src="js/main.js"></script>
 </body>
 </html>
