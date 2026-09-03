@@ -11,7 +11,7 @@
    * REPLACE THIS with the URL of your deployed Google Apps Script Web App
    * (see README.md, step "Deploy Apps Script"). It must end in /exec.
    */
-  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzx8S_Crllb6s8A62H8kQKivu5M6Ho2fTDLwmMLPJvR_FFMXoshkT4bBSNrRgQteCQM/exec";
+  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwPCVjIxHBT8siX49V6NCxIbg_eUiJh6Z6B0YN6sDFo8GKtyGkJ3ziqRM7hmNUJZZ8N/exec";
 
   var takenTalkGroups = [];
 
