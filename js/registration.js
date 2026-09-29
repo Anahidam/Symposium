@@ -16,6 +16,12 @@
   var takenTalkGroups = [];
 
   /**
+   * External groups never get a Scientific Talk slot — only Poster is
+   * available to them, regardless of what's already been registered.
+   */
+  var EXTERNAL_GROUPS = ["external group 1", "external group 2", "external group 3"];
+
+  /**
    * Entry point: wires up every interactive piece of the registration form.
    * Does nothing on pages that don't contain the form.
    */
@@ -57,8 +63,9 @@
   }
 
   /**
-   * Disables/enables the Scientific Talk radio based on whether the
-   * currently selected research group already has a talk slot taken. If
+   * Disables/enables the Scientific Talk radio based on the currently
+   * selected research group: external groups never get a talk slot, and
+   * any other group loses it once one has already been registered. If
    * Scientific Talk was selected and becomes unavailable, switches the
    * selection to Poster automatically.
    */
@@ -70,12 +77,19 @@
     if (!instituteSelect || !talkRadio) return;
 
     var group = instituteSelect.value;
+    var isExternal = group && EXTERNAL_GROUPS.indexOf(group) !== -1;
     var isTaken = group && takenTalkGroups.indexOf(group) !== -1;
+    var isBlocked = isExternal || isTaken;
 
-    talkRadio.disabled = isTaken;
-    if (note) note.style.display = isTaken ? "block" : "none";
+    talkRadio.disabled = isBlocked;
+    if (note) {
+      note.textContent = isExternal
+        ? "Scientific Talk is not available for external groups — please select Poster instead."
+        : "A scientific talk slot for this research group has already been claimed — please select Poster instead.";
+      note.style.display = isBlocked ? "block" : "none";
+    }
 
-    if (isTaken && talkRadio.checked) {
+    if (isBlocked && talkRadio.checked) {
       talkRadio.checked = false;
       posterRadio.checked = true;
       posterRadio.dispatchEvent(new Event("change"));
