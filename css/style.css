@@ -730,6 +730,60 @@ ul {
   margin-bottom: 0;
 }
 
+.session-format {
+  color: var(--color-text-light);
+  font-size: 0.88rem;
+  margin: 2px 0 0;
+}
+
+.talk-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.talk-meta {
+  line-height: 1.5;
+}
+
+.talk-time {
+  font-weight: 700;
+  color: var(--color-accent);
+  margin-right: 10px;
+}
+
+.talk-speaker {
+  font-weight: 700;
+  color: var(--color-primary-dark);
+}
+
+.talk-group {
+  color: var(--color-text-light);
+  font-weight: 700;
+}
+
+.talk-title {
+  color: var(--color-text-light);
+  font-size: 0.94rem;
+  font-style: italic;
+  margin-top: 4px;
+}
+
+.poster-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.poster-card {
+  background: var(--color-bg-alt);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+}
+
 /* ==========================================================================
    Registration form
    ========================================================================== */
@@ -876,6 +930,11 @@ ul {
 
 .choice-option input:focus-visible + label {
   box-shadow: 0 0 0 4px var(--color-primary-light);
+}
+
+.choice-option input:disabled + label {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .checkbox-row {
