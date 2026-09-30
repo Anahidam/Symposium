@@ -22,12 +22,26 @@
   var EXTERNAL_GROUPS = ["external group 1", "external group 2", "external group 3"];
 
   /**
+   * Registration stays open through the end of 30 September 2026 (visitor's
+   * local time) and closes automatically at the start of 1 October 2026.
+   */
+  var REGISTRATION_DEADLINE = new Date("2026-10-01T00:00:00");
+
+  /**
    * Entry point: wires up every interactive piece of the registration form.
-   * Does nothing on pages that don't contain the form.
+   * Does nothing on pages that don't contain the form. If the deadline has
+   * passed, shows a "Registration is closed" message instead.
    */
   function initRegistrationForm() {
     var form = document.getElementById("registration-form");
     if (!form) return;
+
+    if (new Date() >= REGISTRATION_DEADLINE) {
+      form.style.display = "none";
+      var closedScreen = document.getElementById("closed-screen");
+      if (closedScreen) closedScreen.classList.add("show");
+      return;
+    }
 
     initContributionLogic();
     initTalkAvailability();
