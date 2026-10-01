@@ -22,10 +22,10 @@
   var EXTERNAL_GROUPS = ["external group 1", "external group 2", "external group 3"];
 
   /**
-   * Registration stays open through the end of 30 September 2026 (visitor's
-   * local time) and closes automatically at the start of 1 October 2026.
+   * Registration stays open through the end of 7 October 2026 (visitor's
+   * local time) and closes automatically at the start of 8 October 2026.
    */
-  var REGISTRATION_DEADLINE = new Date("2026-10-01T00:00:00");
+  var REGISTRATION_DEADLINE = new Date("2026-10-08T00:00:00");
 
   /**
    * Entry point: wires up every interactive piece of the registration form.
