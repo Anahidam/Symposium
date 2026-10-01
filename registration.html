@@ -1,283 +1,262 @@
-/**
- * registration.js — 5th Biosciences Symposium, TU Darmstadt
- * Drives the registration form: conditional fields, per-group talk
- * availability, live validation and the AJAX submission to the Google
- * Apps Script backend.
- */
-(function () {
-  "use strict";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registration — 5th Biosciences Symposium | TU Darmstadt</title>
+<meta name="description" content="Register for the 5th Biosciences Symposium at TU Darmstadt, 20 October 2026. Submit your talk, poster or flash talk contribution.">
+<link rel="icon" type="image/png" href="assets/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/mobile.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
 
-  /**
-   * REPLACE THIS with the URL of your deployed Google Apps Script Web App
-   * (see README.md, step "Deploy Apps Script"). It must end in /exec.
-   */
-  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwPCVjIxHBT8siX49V6NCxIbg_eUiJh6Z6B0YN6sDFo8GKtyGkJ3ziqRM7hmNUJZZ8N/exec";
+<header class="site-header" id="site-header">
+  <div class="navbar">
+    <a href="index.html" class="brand">
+      <img src="assets/images/logo.png" alt="5th Biosciences Symposium logo">
+      <span class="brand-text">
+        <span class="brand-title">Biosciences Symposium</span>
+        <span class="brand-sub">TU Darmstadt · 5th Edition</span>
+      </span>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="registration.html" class="active">Registration</a></li>
+      <li><a href="programme.html">Programme</a></li>
+      <li><a href="venue.html">Venue</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="privacy.html">Privacy</a></li>
+      <li class="nav-cta"><a href="registration.html" class="btn btn-primary">Register Now</a></li>
+    </ul>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-  var takenTalkGroups = [];
+<main id="main">
 
-  /**
-   * External groups never get a Scientific Talk slot — only Poster is
-   * available to them, regardless of what's already been registered.
-   */
-  var EXTERNAL_GROUPS = ["external group 1", "external group 2", "external group 3"];
+  <section class="page-header">
+    <div class="container">
+      <div class="breadcrumb">Join us on 20 October 2026</div>
+      <h1>Registration</h1>
+      <p>Register for the 5th Biosciences Symposium at TU Darmstadt. Registration is free — please complete the form below by <strong>7 October 2026</strong>.</p>
+    </div>
+  </section>
 
-  /**
-   * Registration stays open through the end of 7 October 2026 (visitor's
-   * local time) and closes automatically at the start of 8 October 2026.
-   */
-  var REGISTRATION_DEADLINE = new Date("2026-10-08T00:00:00");
+  <section class="section">
+    <div class="container">
 
-  /**
-   * Entry point: wires up every interactive piece of the registration form.
-   * Does nothing on pages that don't contain the form. If the deadline has
-   * passed, shows a "Registration is closed" message instead.
-   */
-  function initRegistrationForm() {
-    var form = document.getElementById("registration-form");
-    if (!form) return;
+      <!-- ============ Registration Form ============ -->
+      <form id="registration-form" class="form-shell" novalidate>
 
-    if (new Date() >= REGISTRATION_DEADLINE) {
-      form.style.display = "none";
-      var closedScreen = document.getElementById("closed-screen");
-      if (closedScreen) closedScreen.classList.add("show");
-      return;
-    }
+        <!-- Personal Information -->
+        <div class="form-section">
+          <h2 class="form-section-title">Personal Information</h2>
+          <p class="form-section-desc">Please tell us a little about yourself.</p>
 
-    initContributionLogic();
-    initTalkAvailability();
-    initSubmitHandler(form);
-  }
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name <span class="required">*</span></label>
+              <input type="text" id="firstName" name="firstName" required autocomplete="given-name">
+              <span class="field-error">Please enter your first name.</span>
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name <span class="required">*</span></label>
+              <input type="text" id="lastName" name="lastName" required autocomplete="family-name">
+              <span class="field-error">Please enter your last name.</span>
+            </div>
+          </div>
 
-  /**
-   * Ensures only one Scientific Talk slot exists per research group: fetches
-   * the list of groups that already have a talk registered, then disables
-   * the "Scientific Talk" option whenever the selected group is on that
-   * list. "Poster" is never affected and always stays available.
-   */
-  function initTalkAvailability() {
-    var instituteSelect = document.getElementById("institute");
-    if (!instituteSelect) return;
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email <span class="required">*</span></label>
+              <input type="email" id="email" name="email" required autocomplete="email">
+              <span class="field-error">Please enter a valid email address.</span>
+            </div>
+            <div class="form-group">
+              <label for="institute">Research Group / Institute <span class="required">*</span></label>
+              <select id="institute" name="institute" required>
+                <option value="" disabled selected>Select your research group</option>
+                <option value="Blüthgen">AG Blüthgen</option>
+                <option value="Cardoso">AG Cardoso</option>
+                <option value="Dann">AG Dann</option>
+                <option value="Galuske">AG Galuske</option>
+                <option value="Hamacher">AG Hamacher</option>
+                <option value="Heethoff">AG Heethoff</option>
+                <option value="Hess">AG Hess</option>
+                <option value="Heun">AG Heun</option>
+                <option value="Jürgens">AG Jürgens</option>
+                <option value="Laube">AG Laube</option>
+                <option value="Löbrich">AG Löbrich</option>
+                <option value="Löwer">AG Löwer</option>
+                <option value="Mirzapour">AG Mirzapour</option>
+                <option value="Nuber">AG Nuber</option>
+                <option value="Poppinga">AG Poppinga</option>
+                <option value="Simon">AG Simon</option>
+                <option value="Stein">AG Stein</option>
+                <option value="Süß">AG Süß</option>
+                <option value="Waldminghaus">AG Waldminghaus</option>
+                <option value="Warzecha">AG Warzecha</option>
+                <option value="external group 1">External group 1</option>
+                <option value="external group 2">External group 2</option>
+                <option value="external group 3">External group 3</option>
+              </select>
+              <span class="field-error">Please select your research group.</span>
+            </div>
+          </div>
 
-    instituteSelect.addEventListener("change", applyTalkAvailability);
+          <div class="form-group">
+            <label>Position <span class="required">*</span></label>
+            <div class="choice-group" id="position-group">
+              <div class="choice-option">
+                <input type="radio" name="position" id="position-postdoc" value="Postdoc" required>
+                <label for="position-postdoc">Postdoc</label>
+              </div>
+              <div class="choice-option">
+                <input type="radio" name="position" id="position-phd" value="PhD Student">
+                <label for="position-phd">PhD Student</label>
+              </div>
+            </div>
+            <span class="field-error" id="position-error">Please select your position.</span>
+          </div>
+        </div>
 
-    fetch(APPS_SCRIPT_URL + "?action=talkGroups")
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (result) {
-        if (result && result.status === "success" && Array.isArray(result.groups)) {
-          takenTalkGroups = result.groups;
-          applyTalkAvailability();
-        }
-      })
-      .catch(function () {
-        // If the check can't be reached, fail open: leave Scientific Talk
-        // selectable rather than blocking registration entirely.
-      });
-  }
+        <!-- Contribution -->
+        <div class="form-section">
+          <h2 class="form-section-title">Contribution</h2>
+          <p class="form-section-desc">How would you like to contribute to the symposium?</p>
 
-  /**
-   * Disables/enables the Scientific Talk radio based on the currently
-   * selected research group: external groups never get a talk slot, and
-   * any other group loses it once one has already been registered. If
-   * Scientific Talk was selected and becomes unavailable, switches the
-   * selection to Poster automatically.
-   */
-  function applyTalkAvailability() {
-    var instituteSelect = document.getElementById("institute");
-    var talkRadio = document.getElementById("contribution-talk");
-    var posterRadio = document.getElementById("contribution-poster");
-    var note = document.getElementById("talk-taken-note");
-    if (!instituteSelect || !talkRadio) return;
+          <div class="form-group">
+            <div class="choice-group" id="contribution-group">
+              <div class="choice-option">
+                <input type="radio" name="contribution" id="contribution-talk" value="Scientific Talk" required>
+                <label for="contribution-talk">Scientific Talk</label>
+              </div>
+              <div class="choice-option">
+                <input type="radio" name="contribution" id="contribution-poster" value="Poster">
+                <label for="contribution-poster">Poster</label>
+              </div>
+            </div>
+            <span class="field-error" id="contribution-error">Please select a contribution type.</span>
+            <span class="help-text" id="talk-taken-note" style="display:none; color:#b8943a; font-weight:600;">A scientific talk slot for this research group has already been claimed — please select Poster instead.</span>
+          </div>
 
-    var group = instituteSelect.value;
-    var isExternal = group && EXTERNAL_GROUPS.indexOf(group) !== -1;
-    var isTaken = group && takenTalkGroups.indexOf(group) !== -1;
-    var isBlocked = isExternal || isTaken;
+          <!-- Flash talk checkbox: only shown when "Poster" is selected -->
+          <div class="conditional-block" id="flashtalk-block">
+            <div class="checkbox-row">
+              <input type="checkbox" id="flashTalk" name="flashTalk">
+              <label for="flashTalk">I would like to be considered for a Flash Talk.</label>
+            </div>
+          </div>
+        </div>
 
-    talkRadio.disabled = isBlocked;
-    if (note) {
-      note.textContent = isExternal
-        ? "Scientific Talk is not available for external groups — please select Poster instead."
-        : "A scientific talk slot for this research group has already been claimed — please select Poster instead.";
-      note.style.display = isBlocked ? "block" : "none";
-    }
+        <!-- Presentation -->
+        <div class="form-section">
+          <h2 class="form-section-title">Presentation</h2>
+          <p class="form-section-desc">Details about your talk or poster contribution.</p>
 
-    if (isBlocked && talkRadio.checked) {
-      talkRadio.checked = false;
-      posterRadio.checked = true;
-      posterRadio.dispatchEvent(new Event("change"));
-    }
-  }
+          <div class="form-group">
+            <label for="presentationTitle">Presentation Title <span class="required">*</span></label>
+            <input type="text" id="presentationTitle" name="presentationTitle" required>
+            <span class="field-error">Please enter your presentation title.</span>
+          </div>
 
-  /**
-   * Shows the "Flash Talk" checkbox only when "Poster" is selected, and
-   * clears/hides it again for "Scientific Talk" so it is never submitted
-   * for talk presenters.
-   */
-  function initContributionLogic() {
-    var radios = document.querySelectorAll('input[name="contribution"]');
-    var flashBlock = document.getElementById("flashtalk-block");
-    var flashCheckbox = document.getElementById("flashTalk");
+          <div class="form-group">
+            <label for="abstract">Abstract <span class="help-text" style="display:inline">(optional)</span></label>
+            <textarea id="abstract" name="abstract" rows="4" placeholder="Enter your abstract, if available (optional)."></textarea>
+          </div>
+        </div>
 
-    function update() {
-      var selected = document.querySelector('input[name="contribution"]:checked');
-      var isPoster = !!selected && selected.value === "Poster";
+        <!-- Consent -->
+        <div class="form-section">
+          <div class="checkbox-row">
+            <input type="checkbox" id="consent" name="consent" required>
+            <label for="consent">I agree that my data may be processed for organizing the symposium. <span class="required">*</span></label>
+          </div>
+          <span class="field-error" id="consent-error">Consent is required to submit your registration.</span>
+        </div>
 
-      if (isPoster) {
-        flashBlock.classList.add("show");
-      } else {
-        flashBlock.classList.remove("show");
-        flashCheckbox.checked = false;
-      }
-    }
+        <!-- Submit -->
+        <div class="form-submit-row">
+          <button type="submit" class="btn btn-primary btn-large btn-block" id="submit-btn">
+            <span class="spinner" id="submit-spinner"></span>
+            <span id="submit-label">Submit Registration</span>
+          </button>
+          <div class="form-status" id="form-status"></div>
+        </div>
+      </form>
 
-    radios.forEach(function (radio) {
-      radio.addEventListener("change", update);
-    });
+      <!-- ============ Success screen ============ -->
+      <div class="success-screen form-shell" id="success-screen">
+        <div class="success-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0f5a43" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" stroke-opacity="0"/>
+            <path d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+        <h2>Registration received!</h2>
+        <p>Thank you for registering for the 5th Biosciences Symposium.<br>A confirmation email has been sent.</p>
+        <a href="index.html" class="btn btn-outline">Back to homepage</a>
+      </div>
 
-    update();
-  }
+      <!-- ============ Closed screen (shown once the deadline has passed) ============ -->
+      <div class="success-screen form-shell" id="closed-screen">
+        <div class="success-check" style="background: var(--color-accent-light);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#b8943a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 8v5M12 16h.01"/>
+          </svg>
+        </div>
+        <h2>Registration is closed</h2>
+        <p>The registration deadline (7 October 2026) has passed. If you have a question about your registration, please contact the organising committee.</p>
+        <a href="contact.html" class="btn btn-outline">Contact us</a>
+      </div>
 
-  /**
-   * Validates a single required text/email input, toggling its error
-   * message and "invalid" style. Returns whether the field is valid.
-   */
-  function validateField(input, checkFn) {
-    var group = input.closest(".form-group");
-    var errorEl = group ? group.querySelector(".field-error") : null;
-    var valid = checkFn(input.value.trim());
+    </div>
+  </section>
 
-    input.classList.toggle("invalid", !valid);
-    if (errorEl) errorEl.classList.toggle("show", !valid);
+</main>
 
-    return valid;
-  }
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <img src="assets/images/logo.png" alt="">
+          <span>5th Biosciences Symposium</span>
+        </div>
+        <p>An interdisciplinary meeting of biosciences researchers at TU Darmstadt — connecting ideas, inspiring discovery, building collaborations.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="programme.html">Programme</a></li>
+          <li><a href="registration.html">Registration</a></li>
+          <li><a href="venue.html">Venue</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:tubiosciences.symposium@gmail.com">tubiosciences.symposium@gmail.com</a></li>
+          <li>Department of Biology<br>TU Darmstadt<br>Schnittspahnstraße 10, 64287 Darmstadt</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 5th Biosciences Symposium, TU Darmstadt. All rights reserved.</span>
+      <span><a href="privacy.html">Privacy Policy</a></span>
+    </div>
+  </div>
+</footer>
 
-  /**
-   * Validates a required radio-button group, showing its shared error
-   * message when nothing has been selected.
-   */
-  function validateRadioGroup(name, errorId) {
-    var checked = document.querySelector('input[name="' + name + '"]:checked');
-    var errorEl = document.getElementById(errorId);
-    var valid = !!checked;
-
-    if (errorEl) errorEl.classList.toggle("show", !valid);
-    return valid;
-  }
-
-  /**
-   * Runs full client-side validation across the form and returns true only
-   * if every required field passes.
-   */
-  function validateForm(form) {
-    var isEmail = function (value) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-    };
-    var notEmpty = function (value) {
-      return value.length > 0;
-    };
-
-    var results = [
-      validateField(form.firstName, notEmpty),
-      validateField(form.lastName, notEmpty),
-      validateField(form.email, isEmail),
-      validateField(form.institute, notEmpty),
-      validateField(form.presentationTitle, notEmpty),
-      validateRadioGroup("position", "position-error"),
-      validateRadioGroup("contribution", "contribution-error"),
-    ];
-
-    var consent = document.getElementById("consent");
-    var consentError = document.getElementById("consent-error");
-    var consentValid = consent.checked;
-    consentError.classList.toggle("show", !consentValid);
-    results.push(consentValid);
-
-    return results.every(Boolean);
-  }
-
-  /**
-   * Builds the FormData payload for the Apps Script backend from the form's
-   * current field values.
-   */
-  function buildPayload(form) {
-    var data = new FormData();
-    data.append("firstName", form.firstName.value.trim());
-    data.append("lastName", form.lastName.value.trim());
-    data.append("email", form.email.value.trim());
-    data.append("institute", form.institute.value.trim());
-    data.append("position", (form.querySelector('input[name="position"]:checked') || {}).value || "");
-    data.append("contribution", (form.querySelector('input[name="contribution"]:checked') || {}).value || "");
-    data.append("flashTalk", form.flashTalk.checked ? "Yes" : "No");
-    data.append("presentationTitle", form.presentationTitle.value.trim());
-    data.append("abstract", form.abstract.value.trim());
-
-    return data;
-  }
-
-  /**
-   * Wires up form submission: validates, shows the loading spinner, sends
-   * the payload to Apps Script via fetch, and reveals the success screen
-   * (or an inline error) based on the response — all without a page reload.
-   */
-  function initSubmitHandler(form) {
-    var submitBtn = document.getElementById("submit-btn");
-    var spinner = document.getElementById("submit-spinner");
-    var label = document.getElementById("submit-label");
-    var status = document.getElementById("form-status");
-    var successScreen = document.getElementById("success-screen");
-
-    form.addEventListener("submit", function (event) {
-      event.preventDefault();
-      status.textContent = "";
-      status.classList.remove("error");
-
-      if (!validateForm(form)) {
-        var firstInvalid = form.querySelector(".invalid, .field-error.show");
-        if (firstInvalid) {
-          var target = firstInvalid.classList.contains("field-error")
-            ? firstInvalid.previousElementSibling || firstInvalid.parentElement
-            : firstInvalid;
-          if (target && target.scrollIntoView) {
-            target.scrollIntoView({ behavior: "smooth", block: "center" });
-          }
-        }
-        return;
-      }
-
-      submitBtn.disabled = true;
-      spinner.classList.add("show");
-      label.textContent = "Submitting...";
-
-      fetch(APPS_SCRIPT_URL, {
-        method: "POST",
-        body: buildPayload(form),
-      })
-        .then(function (response) {
-          return response.json();
-        })
-        .then(function (result) {
-          if (result && result.status === "success") {
-            form.style.display = "none";
-            successScreen.classList.add("show");
-            successScreen.scrollIntoView({ behavior: "smooth", block: "start" });
-          } else {
-            throw new Error((result && result.message) || "Submission failed. Please try again.");
-          }
-        })
-        .catch(function (error) {
-          status.textContent = "Something went wrong: " + error.message + " Please try again or contact the organisers.";
-          status.classList.add("error");
-        })
-        .finally(function () {
-          submitBtn.disabled = false;
-          spinner.classList.remove("show");
-          label.textContent = "Submit Registration";
-        });
-    });
-  }
-
-  document.addEventListener("DOMContentLoaded", initRegistrationForm);
-})();
+<script src="js/main.js"></script>
+<script src="js/registration.js"></script>
+</body>
+</html>
