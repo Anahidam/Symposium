@@ -3,8 +3,7 @@
  *
  * Deployed as a Google Apps Script Web App, bound to a Google Sheet.
  * Receives registration submissions via POST, stores them in the bound
- * Sheet, uploads the optional TOC file to Google Drive, and sends the
- * registrant a confirmation email.
+ * Sheet, and sends the registrant a confirmation email.
  *
  * See README.md for full setup and deployment instructions.
  */
@@ -12,10 +11,15 @@
 // ---- Configuration -------------------------------------------------------
 
 var SHEET_NAME = "Registrations";
-var DRIVE_ROOT_FOLDER_NAME = "TOC Uploads";
 var SYMPOSIUM_NAME = "5th Biosciences Symposium";
 var SYMPOSIUM_DATE = "20 October 2026";
 var SYMPOSIUM_VENUE = "Biology Building B2|03, Room 109, TU Darmstadt";
+
+// Registration stays open through the end of 9 October 2026 (Europe/Berlin)
+// and closes automatically at the start of 10 October 2026. Enforced here too
+// (not just in the front end) so a direct POST after the deadline is also
+// rejected.
+var REGISTRATION_DEADLINE = new Date("2026-10-10T00:00:00+02:00");
 
 var SHEET_HEADERS = [
   "Timestamp",
@@ -27,38 +31,72 @@ var SHEET_HEADERS = [
   "Contribution",
   "Flash Talk",
   "Presentation Title",
-  "Authors",
-  "Keywords",
   "Abstract",
-  "TOC Drive Link",
   "Notes",
 ];
 
 /**
- * Handles GET requests. Only used to confirm the Web App is deployed and
- * reachable — the registration form itself always submits via POST.
+ * Handles GET requests. With no parameters, just confirms the Web App is
+ * live. With ?action=talkGroups, returns the list of research groups that
+ * already have a Scientific Talk registered, so the form can block that
+ * option for later registrants from the same group (Poster stays open).
  */
-function doGet() {
-  return ContentService.createTextOutput(
-    JSON.stringify({ status: "ok", message: SYMPOSIUM_NAME + " registration endpoint is live." })
-  ).setMimeType(ContentService.MimeType.JSON);
+function doGet(e) {
+  var action = e && e.parameter && e.parameter.action;
+
+  if (action === "talkGroups") {
+    return jsonResponse({ status: "success", groups: getGroupsWithTalk() });
+  }
+
+  return jsonResponse({ status: "ok", message: SYMPOSIUM_NAME + " registration endpoint is live." });
+}
+
+/**
+ * Strips a leading "AG " (case-insensitive) so group names are compared
+ * consistently regardless of whether they were stored with or without the
+ * prefix — older sheet rows use "AG Dann", the registration form's dropdown
+ * submits the bare surname ("Dann").
+ */
+function normalizeGroup(group) {
+  return String(group || "").trim().replace(/^AG\s+/i, "").trim();
+}
+
+/**
+ * Scans the Registrations sheet and returns the distinct list of research
+ * groups (normalized, without any "AG " prefix) that already have a
+ * "Scientific Talk" contribution registered.
+ */
+function getGroupsWithTalk() {
+  var sheet = getOrCreateSheet();
+  var rows = sheet.getDataRange().getValues();
+  var groups = [];
+
+  for (var i = 1; i < rows.length; i++) {
+    var group = normalizeGroup(rows[i][4]);
+    var contribution = String(rows[i][6] || "").trim();
+
+    if (contribution === "Scientific Talk" && group && groups.indexOf(group) === -1) {
+      groups.push(group);
+    }
+  }
+
+  return groups;
 }
 
 /**
  * Handles POST requests from the registration form: validates the payload,
- * stores it in the Sheet, uploads the TOC file (if any) to Drive, sends a
- * confirmation email, and returns a JSON success/error response.
+ * stores it in the Sheet, sends a confirmation email, and returns a JSON
+ * success/error response.
  */
 function doPost(e) {
   try {
-    var data = parseRequest(e);
-    var driveUrl = "";
-
-    if (data.tocFileData && data.tocFileName) {
-      driveUrl = saveTocFile(data);
+    if (new Date() >= REGISTRATION_DEADLINE) {
+      return jsonResponse({ status: "error", message: "Registration is closed. The deadline (9 October 2026) has passed." });
     }
 
-    appendRegistrationRow(data, driveUrl);
+    var data = parseRequest(e);
+
+    appendRegistrationRow(data);
     sendConfirmationEmail(data);
 
     return jsonResponse({ status: "success", message: "Registration received." });
@@ -74,7 +112,7 @@ function doPost(e) {
 function parseRequest(e) {
   var p = (e && e.parameter) || {};
 
-  var required = ["firstName", "lastName", "email", "institute", "position", "contribution", "presentationTitle", "authors"];
+  var required = ["firstName", "lastName", "email", "institute", "position", "contribution", "presentationTitle"];
   required.forEach(function (key) {
     if (!p[key] || String(p[key]).trim() === "") {
       throw new Error("Missing required field: " + key);
@@ -90,52 +128,16 @@ function parseRequest(e) {
     contribution: String(p.contribution).trim(),
     flashTalk: String(p.flashTalk || "No").trim(),
     presentationTitle: String(p.presentationTitle).trim(),
-    authors: String(p.authors).trim(),
-    keywords: String(p.keywords || "").trim(),
     abstract: String(p.abstract || "").trim(),
     notes: String(p.notes || "").trim(),
-    tocFileName: p.tocFileName ? String(p.tocFileName).trim() : "",
-    tocFileType: p.tocFileType ? String(p.tocFileType).trim() : "application/octet-stream",
-    tocFileData: p.tocFileData ? String(p.tocFileData) : "",
   };
-}
-
-/**
- * Decodes the base64-encoded TOC upload and saves it into the Drive
- * subfolder matching the registrant's contribution type, returning the
- * file's shareable URL.
- */
-function saveTocFile(data) {
-  var bytes = Utilities.base64Decode(data.tocFileData);
-  var blob = Utilities.newBlob(bytes, data.tocFileType, data.tocFileName);
-
-  var rootFolder = getOrCreateFolder(DriveApp.getRootFolder(), DRIVE_ROOT_FOLDER_NAME);
-  var subFolderName = data.contribution === "Poster" ? "Poster" : "Talk";
-  var targetFolder = getOrCreateFolder(rootFolder, subFolderName);
-
-  var file = targetFolder.createFile(blob);
-  file.setName(data.lastName + "_" + data.firstName + "_" + data.tocFileName);
-
-  return file.getUrl();
-}
-
-/**
- * Returns the child folder with the given name inside parentFolder,
- * creating it first if it does not already exist.
- */
-function getOrCreateFolder(parentFolder, name) {
-  var existing = parentFolder.getFoldersByName(name);
-  if (existing.hasNext()) {
-    return existing.next();
-  }
-  return parentFolder.createFolder(name);
 }
 
 /**
  * Appends one row representing this registration to the bound Sheet,
  * creating the sheet and its header row on first use.
  */
-function appendRegistrationRow(data, driveUrl) {
+function appendRegistrationRow(data) {
   var sheet = getOrCreateSheet();
 
   sheet.appendRow([
@@ -148,10 +150,7 @@ function appendRegistrationRow(data, driveUrl) {
     data.contribution,
     data.flashTalk,
     data.presentationTitle,
-    data.authors,
-    data.keywords,
     data.abstract,
-    driveUrl,
     data.notes,
   ]);
 }
