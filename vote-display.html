@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scan to Vote — 5th Biosciences Symposium</title>
+<meta name="description" content="Scan to vote for Best Talk and Best Poster at the 5th Biosciences Symposium.">
+<link rel="icon" type="image/png" href="assets/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    background: linear-gradient(160deg, var(--color-primary-dark), var(--color-primary));
+    overflow: hidden;
+  }
+  .display-wrap {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 24px;
+    box-sizing: border-box;
+  }
+  .display-logo {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 18px;
+    opacity: 0.9;
+  }
+  .display-eyebrow {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent-light);
+    margin-bottom: 8px;
+  }
+  .display-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+    color: #fff;
+    margin: 0 0 10px;
+  }
+  .display-sub {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 2.4vw, 1.3rem);
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0 0 34px;
+    max-width: 520px;
+  }
+  .qr-card {
+    background: #fff;
+    border-radius: 28px;
+    padding: 28px;
+    box-shadow: var(--shadow-lg);
+  }
+  .qr-card img {
+    display: block;
+    width: min(42vh, 360px);
+    height: min(42vh, 360px);
+  }
+  .display-note {
+    font-family: var(--font-body);
+    font-size: clamp(0.85rem, 1.8vw, 1rem);
+    color: rgba(255, 255, 255, 0.75);
+    margin-top: 28px;
+  }
+  .display-note strong {
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+  <div class="display-wrap">
+    <img class="display-logo" src="assets/images/logo.png" alt="">
+    <div class="display-eyebrow">5th Biosciences Symposium</div>
+    <h1 class="display-title">Scan to Vote</h1>
+    <p class="display-sub">Best Talk &amp; Best Poster — the ballot opens on your own phone.</p>
+    <div class="qr-card">
+      <img src="assets/images/vote-qr.png" alt="QR code to the voting page">
+    </div>
+    <p class="display-note">Anonymous &middot; <strong>one vote per device</strong></p>
+  </div>
+</body>
+</html>
