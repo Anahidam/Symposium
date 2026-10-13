@@ -12,7 +12,7 @@
    * App (a separate deployment from the registration one, bound to its own
    * private Sheet). It must end in /exec.
    */
-  var APPS_SCRIPT_URL = "REPLACE_WITH_VOTE_APPS_SCRIPT_URL";
+  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwH3d_427lwXRTb2yFyMxlAKNpn8ecuohsFnL2DgSLaEoStHS8x8jxMCg0breFBjWEv/exec";
 
   var STORAGE_TOKEN = "symposium_vote_device_token";
   var STORAGE_VOTED = "symposium_vote_cast";
